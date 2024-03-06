@@ -15,14 +15,20 @@ sudo apt upgrade
 ### Instale os pacotes de pré-requisitos:
 
 ```
-sudo apt-get install  curl apt-transport-https ca-certificates software-properties-common
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
 ```
 
 ### Adicione chaves GPG de acesso:
 
 ```
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
+### Adicione o repositório do Docker às fotos do APT
+
+```
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+```
+
 
 ### Atualize o sistema novamente:
 
@@ -96,7 +102,7 @@ sudo apt-get install pip
 
 ### Verifique a instalação do PIP
 ```
-pip3 –version
+pip -–version
 ```
 
 ## Instalação do Django
