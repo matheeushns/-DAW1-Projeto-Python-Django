@@ -109,7 +109,7 @@ pip --version
 
 ### Insira o código para instalar o Django
 ```
-python3 -m pip install Django
+sudo apt install python3-django
 ```
 
 ## Instalação do PostgreSQL no Docker
