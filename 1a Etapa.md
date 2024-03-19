@@ -102,7 +102,7 @@ sudo apt-get install pip
 
 ### Verifique a instalação do PIP
 ```
-pip -–version
+pip --version
 ```
 
 ## Instalação do Django
