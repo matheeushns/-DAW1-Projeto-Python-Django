@@ -112,38 +112,85 @@ pip -–version
 python3 -m pip install Django
 ```
 
-## Instalação do MongoDB no Docker
+## Instalação do PostgreSQL no Docker
 
-### Coloque a imagem do MongoDB no Docker
-```
-sudo docker pull mongodb/mongodb-community-server
-```
+### Crie um diretório chamado postgresql (por exemplo dentro de Programas)
 
-### Inicie a imagem como container
 ```
-sudo docker run --name mongo -p 27017:27017 -d mongodb/mongodb-community-server:latest
+mkdir Programas
 ```
-
-### Conecte o MongoDB com mongosh
 ```
-sudo docker exec -it mongo mongosh
+cd ~/Programas
 ```
-
-### Cole o comando abaixo e dê enter
 ```
-db.runCommand(
-	{
-		hello: 1
-	}
-)
+mkdir postgresql
+```
+```
+cd postgresql
 ```
 
-**Digite exit e dê enter para sair**
+### Crie um arquivo chamado Dockerfile com o seguinte conteúdo:
 
-### Instale o MongoDB Compass
 ```
-https://downloads.mongodb.com/compass/mongodb-compass_1.42.1_amd64.deb
+xed Dockerfile
 ```
+```
+# Version: 1.0
+FROM postgres:latest
+ENV REFRESHED_AT 2022-07-30
+RUN apt-get update && apt-get install -y locales
+RUN touch /usr/share/locale/locale.alias
+ENV LANG pt_BR.UTF-8
+ENV LANGUAGE pt_BR:pt
+ENV LC_ALL pt_BR.UTF-8
+RUN sed -i '/pt_BR.UTF-8/s/^# //g' /etc/locale.gen && locale-gen && update-locale LANG=pt_BR.UTF-8
+ENV TZ=America/Sao_Paulo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+```
+
+### Criar a imagem do PostgreSQL que usaremos
+
+```
+sudo docker build -t="{SEUUSUARIO}/postgresql" .
+```
+
+### Criar o container do PostgreSQL
+
+```
+sudo docker network create rede_postgresql
+```
+```
+sudo docker volume create --name postgresql_data
+```
+```
+sudo docker run -i -t -d --name postgresql --net=rede_postgresql -p 5432:5432 \
+-e POSTGRES_USER=postgres \
+-e POSTGRES_PASSWORD=12345 \
+--volume postgresql_data:/var/lib/postgresql/data \
+{SEUUSUARIO}/postgresql
+```
+### Instalar o pgagmin4 como aplicação desktop
+
+```
+curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+```
+```
+sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/jammy pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+```
+```
+sudo apt update && sudo apt install -y pgadmin4-desktop
+```
+
+### Adicione o servidor do PostgreSQL clicando em Add Server
+
+General → Name: PostgreSQL Container
+
+Connection → Host name/address: localhost
+
+Connection → Username: postgres
+
+Connection → Password: 12345
+
 
 ### Instale o Visual Studio Code
 ```
