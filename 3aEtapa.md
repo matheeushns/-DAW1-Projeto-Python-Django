@@ -132,5 +132,74 @@ def teste1(request):
     return render(request, 'template.html', {'mensagem': mensagem})]
 ```
 
+**3.3.** Acessando a rota
 
+**3.3.1.** Abra um navegador web e acesse a URL: ```http://localhost:8080/teste1/```
 
+Você verá a mensagem *Teste 1: Rota executou com sucesso!* na tela.
+
+### 4. Teste 2: Usando parâmetros na URL
+
+**4.1.** Configurando a URL
+**4.1.1.** Abra o arquivo ```urls.py``` do seu projeto e substitua o código presente pelo código abaixo:
+``` Python
+from rotas.views import teste1, teste2
+
+urlpatterns = [
+    path('teste1/', teste1, name='rota_teste1'),
+    path('teste2/<int:parametro>', teste2, name='rota_teste2'),
+]
+```
+
+**4.1.2.** No arquivo ```views.py```, substitua o código presente pelo código abaixo:
+``` Python
+from django.shortcuts import render
+
+def teste2(request, parametro):
+    mensagem = f"Teste 2: Rota executou com sucesso recebendo o valor {parametro}!"
+    return render(request, 'template.html', {'mensagem': mensagem})
+```
+
+**4.2.** Acessando a rota
+
+**4.2.1.** Abra um navegador web e acesse a URL: ```http://localhost:8080/teste2/10```
+
+Você verá a mensagem *Rota executou com sucesso recebendo o valor 10!* na tela.
+
+### 5. Teste 3: Processando valores na query String
+
+**5.1.** Configurando a URL
+**5.1.1.** Abra o arquivo ```urls.py``` do seu projeto e substitua o código presente pelo código abaixo:
+``` Python
+from rotas.views import teste1, teste2, teste3
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('teste1/', teste1, name='rota_teste1'),
+    path('teste2/<int:parametro>', teste2, name='rota_teste2'),
+    path('teste3/', teste3, name='rota_teste3'),
+]
+```
+
+**5.1.2.** No arquivo ```views.py```, substitua o código presente pelo código abaixo:
+``` Python
+from django.shortcuts import render
+from django.http import QueryDict
+
+def teste3(request):
+    # Extrai os valores da query string
+    valor = request.GET.get('valor')
+    quantidade = request.GET.get('quantidade')
+
+    # Gera a mensagem com base nos valores extraídos
+    if valor and quantidade:
+        mensagem = f"Teste 3: Rota executou com sucesso recebendo o valor {valor} e quantidade {quantidade}!"
+    else:
+        mensagem = "Teste 3: Rota precisa de 'valor' e 'quantidade' na query string!"
+
+    return render(request, 'template.html', {'mensagem': mensagem})
+```
+
+**5.2.** Acessando a rota
+
+**5.2.1.** Abra um navegador web e acesse a URL: ```http://localhost:8080/teste3/?valor=10&quantidade=5```
