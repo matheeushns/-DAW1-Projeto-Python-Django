@@ -1,4 +1,4 @@
-# 2ª Etapa
+# 2ª Etapa: Criando o primeiro projeto
 
 ## 1. Crie o primeiro projeto em Python utilizando Django
 
