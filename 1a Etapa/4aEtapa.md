@@ -1,4 +1,4 @@
-## 4ª Etapa: Formulários
+# 4ª Etapa: Formulários
 
 **1.** Crie um novo projeto dentro da pasta Projetos.
 ```
@@ -14,7 +14,6 @@ cd Formulario
 ```
 
 **3.** Abra o projeto no Visual Studio Code com ```code .```.
-
 
 **4.** No Visual Studio Code, clique com o botão direito na pasta *Formulario* e clique em *New file…*
 
