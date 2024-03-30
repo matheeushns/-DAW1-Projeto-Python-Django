@@ -4,6 +4,12 @@
 #### Luis Alberto Carvalho Gomes
 #### Matheus Henrique Nunes da Silva
 
-[1ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/be30acde87ac2129020acf33745bff0bd68956c7/1a%20Etapa.md)
+[1ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/5e2a85d27bdcc238be082398ea225cfc2766f271/1a%20Etapa/1a%20Etapa.md)
 
-[2ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/1115f7f50df292944502f081f203f6ef212ff8f1/2aEtapa.md)
+[2ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/5e2a85d27bdcc238be082398ea225cfc2766f271/1a%20Etapa/2aEtapa.md)
+
+[3ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/5e2a85d27bdcc238be082398ea225cfc2766f271/1a%20Etapa/3aEtapa.md)
+
+[4ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/5e2a85d27bdcc238be082398ea225cfc2766f271/1a%20Etapa/4aEtapa.md)
+
+[5ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/5e2a85d27bdcc238be082398ea225cfc2766f271/1a%20Etapa/5aEtapa.md)
