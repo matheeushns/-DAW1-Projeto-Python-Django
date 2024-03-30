@@ -1,6 +1,6 @@
 # 4ª Etapa: Formulários
 
-**1.** Crie um novo projeto dentro da pasta Projetos.
+**1.** Crie um novo projeto dentro da pasta `Projetos`.
 ```
 cd Projetos
 ```
