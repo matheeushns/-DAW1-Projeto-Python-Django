@@ -104,6 +104,7 @@ Agora, vamos configurar as rotas.
 ## 3. Teste 1: Rota simples
 
 **3.1.** Configurando a URL
+
 **3.1.1.** Abra o arquivo ```urls.py``` do seu projeto e adicione o código abaixo
 ``` Python
 from rotas.views import teste1
@@ -135,6 +136,7 @@ Você verá a mensagem *Teste 1: Rota executou com sucesso!* na tela.
 ## 4. Teste 2: Usando parâmetros na URL
 
 **4.1.** Configurando a URL
+
 **4.1.1.** Abra o arquivo ```urls.py``` do seu projeto e substitua o código presente pelo código abaixo:
 ``` Python
 from rotas.views import teste1, teste2
@@ -163,6 +165,7 @@ Você verá a mensagem *Rota executou com sucesso recebendo o valor 10!* na tela
 ## 5. Teste 3: Processando valores na query String
 
 **5.1.** Configurando a URL
+
 **5.1.1.** Abra o arquivo ```urls.py``` do seu projeto e substitua o código presente pelo código abaixo:
 ``` Python
 from rotas.views import teste1, teste2, teste3
