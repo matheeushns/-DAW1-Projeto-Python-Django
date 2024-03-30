@@ -31,4 +31,4 @@ python3 manage.py runserver 8080
 
 http://127.0.0.1:8080
 
-**Caso esteja correto, aparecerá uma página padrão do Django**
+**Caso esteja correto, aparecerá uma página padrão do Django.**
