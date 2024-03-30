@@ -37,12 +37,6 @@ cd ~/Projetos/Projetos/rotas
 mkdir templates
 ```
 ```
-cd templates
-```
-```
-cd ..
-```
-```
 code .
 ```
 
@@ -134,7 +128,7 @@ def teste1(request):
 
 **3.3.** Acessando a rota
 
-**3.3.1.** Abra um navegador web e acesse a URL: ```http://localhost:8080/teste1/```
+**3.3.1.** Abra um navegador web e acesse a URL: http://localhost:8080/teste1/
 
 Você verá a mensagem *Teste 1: Rota executou com sucesso!* na tela.
 
@@ -162,7 +156,7 @@ def teste2(request, parametro):
 
 **4.2.** Acessando a rota
 
-**4.2.1.** Abra um navegador web e acesse a URL: ```http://localhost:8080/teste2/10```
+**4.2.1.** Abra um navegador web e acesse a URL: http://localhost:8080/teste2/10
 
 Você verá a mensagem *Rota executou com sucesso recebendo o valor 10!* na tela.
 
@@ -202,4 +196,4 @@ def teste3(request):
 
 **5.2.** Acessando a rota
 
-**5.2.1.** Abra um navegador web e acesse a URL: ```http://localhost:8080/teste3/?valor=10&quantidade=5```
+**5.2.1.** Abra um navegador web e acesse a URL: http://localhost:8080/teste3/?valor=10&quantidade=5
