@@ -1,4 +1,4 @@
-# 1ª Etapa
+# 1ª Etapa: Instalações
 
 ## 1. Instalação do Docker
 
