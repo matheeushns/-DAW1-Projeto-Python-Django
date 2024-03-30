@@ -7,7 +7,7 @@
 cd Projetos
 ```
 ```
-django.admin startproject rotas
+django-admin startproject rotas
 ```
 
 **1.2.** Depois acesse a pasta do projeto
