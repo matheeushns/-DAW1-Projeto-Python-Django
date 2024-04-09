@@ -1,4 +1,4 @@
-# 5ª Etapa: Atualizando formulário
+## 5ª Etapa: Atualizando formulário
 
 **1.** Vá até o projeto ```Formulario``` para modificá-lo:
 ```
