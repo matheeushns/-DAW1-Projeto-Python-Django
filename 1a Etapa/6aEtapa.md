@@ -149,3 +149,13 @@ DATABASES = {
     }
 }
 ```
+
+**7.** Salve o projeto, rode o programa e verifique as funcionalidades:
+```
+python3 manage.py migrate
+```
+```
+python3 manage.py runserver 8080
+```
+
+Abra no navegador: http://127.0.0.1:8080
