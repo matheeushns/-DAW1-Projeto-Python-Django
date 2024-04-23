@@ -152,6 +152,9 @@ DATABASES = {
 
 **7.** Salve o projeto, rode o programa e verifique as funcionalidades:
 ```
+python3 manage.py makemigrations
+```
+```
 python3 manage.py migrate
 ```
 ```
