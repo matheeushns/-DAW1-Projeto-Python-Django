@@ -107,7 +107,7 @@ class Doador(models.Model):
     tipo_sanguineo = models.CharField(max_length=2, choices=TipoSanguineo.choices)
     rh = models.CharField(max_length=8, choices=RH.choices)
     tipo_rh_corretos = models.BooleanField(default=False)
-    situacao = models.CharField(max_length=7,default="ATIVO",required=False)
+    situacao = models.CharField(max_length=7,default="ATIVO")
 
     def __str__(self) -> str:
         return self.nome
