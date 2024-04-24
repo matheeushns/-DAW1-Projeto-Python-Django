@@ -107,6 +107,10 @@ class Doador(models.Model):
     tipo_sanguineo = models.CharField(max_length=2, choices=TipoSanguineo.choices)
     rh = models.CharField(max_length=8, choices=RH.choices)
     tipo_rh_corretos = models.BooleanField(default=False)
+    situacao = models.CharField(max_length=7,default="ATIVO",required=False)
+
+    def __str__(self) -> str:
+        return self.nome
 
 # Classe Doacao
 class Doacao(models.Model):
@@ -140,7 +144,7 @@ INSTALLED_APPS = [
 ``` Python
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'doacoes',
         'USER': 'postgres',
         'PASSWORD': '12345',
