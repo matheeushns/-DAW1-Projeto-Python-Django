@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}MAIN PAGE{% endblock title %}
+
+{% block content %}
+<main role="main" class="container center-align">
+    <header>
+        <h1 class="center-align">MAIN PAGE</h1>
+    </header>
+    <section class="row">
+        <article class="col s12 m6">
+            <section class="card blue lighten-2">
+                <div class="card-content white-text">
+                    <h2 class="card-title center-align"><i class="large material-icons left">person_add</i>ÁREA PARA INSERIR DOADOR</h2>
+                </div>
+                <footer class="card-action center-align">
+                    <a href="{% url 'cadastrar_doador' %}" class="btn white-text">
+                        <i class="material-icons left">person_add</i>CADASTRAR DOADOR
+                    </a>
+                </footer>
+            </section>
+        </article>
+        <article class="col s12 m6">
+            <section class="card green lighten-2">
+                <div class="card-content white-text">
+                    <h2 class="card-title center-align"><i class="large material-icons left">search</i>ÁREA PARA PESQUISAR DOADOR</h2>
+                </div>
+                <footer class="card-action center-align">
+                    <a href="{% url 'pesquisar_doador' %}" class="btn white-text">
+                        <i class="material-icons left">search</i>PESQUISAR DOADOR
+                    </a>
+                </footer>
+            </section>
+        </article>
+    </section>
+</main>
+
+{% endblock content %}
