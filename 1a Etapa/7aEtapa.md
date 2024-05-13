@@ -83,7 +83,7 @@ STATICFILES_DIRS = [
 ]
 ```
 
-**8.** Crie (dentro da pasta **doacoes**, que a pasta raiz do projeto) os arquivos `views.py` e `forms.py`.
+**8.** Crie (dentro da pasta **doacoes**) os arquivos `views.py` e `forms.py`.
 
 **9.** Cole o código abaixo dentro de `views.py`.
 
