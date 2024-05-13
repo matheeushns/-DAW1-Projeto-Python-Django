@@ -20,3 +20,7 @@
 - [x] [5ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/b0c6f6caa114c8f7349fc2ddfb523fe92427b48e/1a%20Etapa/5aEtapa.md)
 
 - [x] [6ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/b0946c2fb6b3d4e24fe63076960ee068bab390eb/1a%20Etapa/6aEtapa.md)
+
+- [x] [7ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/26deedb1f333262ca9c37b324235f596c9b35b66/1a%20Etapa/7aEtapa.md)
+
+- [ ] [8ª Etapa]()
