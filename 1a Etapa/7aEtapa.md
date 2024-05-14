@@ -14,7 +14,7 @@ cd Projetos/doacoes
 code .
 ```
 
-Abaixo está o esquema de diretórios após todo o projeto pronto. Caso tenha dúvidas, poderá retornar aqui para verificar a hierarquia de pastas.
+Abaixo está o esquema de diretórios após todo o projeto pronto. Caso tenha dúvidas, poderá retornar aqui para verificar a hierarquia de pastas. (PS: Nem todos os arquivos internos estão listados no esquema, então, se você encontrar algum arquivo a mais no seu projeto, fique tranquilo (e não o remova), serve apenas como base para a disposição das pastas.)
 
 ```
 /home/seu_usuario/Projetos/doacoes/
@@ -294,13 +294,6 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
 
         {% endblock content %}
     </main>
-    <script src="{% static 'js/materialize.min.js' %}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var elems = document.querySelectorAll('select');
-            var instances = M.FormSelect.init(elems, options);
-        });
-    </script>
 </body>
 
 </html>
