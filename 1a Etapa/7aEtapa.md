@@ -14,8 +14,7 @@ cd Projetos/doacoes
 code .
 ```
 
-Abaixo está o esquema de diretórios após todo o projeto pronto. Caso tenha dúvidas, poderá retornar aqui para verificar a hierarquia de pastas. (PS: Nem todos os arquivos internos estão listados no esquema, então, se você encontrar algum arquivo a mais no seu projeto, fique tranquilo (e não o remova), serve apenas como base para a disposição das pastas.)
-
+Abaixo está o esquema de diretórios após todo o projeto pronto. Caso tenha dúvidas, poderá retornar aqui para verificar a hierarquia de pastas.
 ```
 /home/seu_usuario/Projetos/doacoes/
 │
