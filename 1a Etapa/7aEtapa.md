@@ -293,6 +293,7 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
 
         {% endblock content %}
     </main>
+    <script src="{% static 'js/materialize.min.js' %}"></script>
 </body>
 
 </html>
