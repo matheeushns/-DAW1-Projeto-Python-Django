@@ -87,12 +87,12 @@
                         <td>{{ doador.get_tipo_sanguineo_display }}</td>
                         <td>{{ doador.get_rh_display }}</td>
                         <td>
-                            <a href="{% url 'cadastrar_doacao' doador.codigo %}" class="btn green">DOAR
+                            <a href="{% url 'cadastrar_doacao' doador.codigo %}" class="waves-effect waves-light btn">DOAR
                                 <i class="material-icons left">opacity</i>
                             </a>
                         </td>
                         <td>
-                            <a href="{% url 'doacoes_doador' doador.codigo %}" class="btn white black-text">VER DOAÇÕES
+                            <a href="{% url 'doacoes_doador' doador.codigo %}" class="btn white red-text">VER DOAÇÕES
                                 <i class="material-icons left">assignment</i>
                             </a>
                         </td>
