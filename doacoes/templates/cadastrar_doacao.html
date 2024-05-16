@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}CADASTRO DE DOAÇÕES{% endblock title %}
+
+{% block content %}
+
+<section class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote><span class="card-title">CADASTRAR NOVA DOAÇÃO</span></blockquote>
+            <div class="divider red darken-2"></div>
+            <div class="py-3 mt-3 mb-3"><br></div>
+            <form action="" method="POST" class="row" novalidate>
+                {% csrf_token %}
+                <div class="row">
+
+                    <blockquote><span class="card-title">DADOS DO DOADOR</span></blockquote>
+                    <div class="divider red darken-2"></div>
+                    <div class="input-field col s12 m6">
+                        <span>{{ doador_form.nome.label_tag }}</span>
+                        {{ doador_form.nome }}
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <span>{{ doador_form.cpf.label_tag }}</span>
+                        {{ doador_form.cpf }}
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <div class="col s12 m6">
+                            <label>TIPO SANGUÍNEO:</label>
+                            <div class="input-field">
+                                {% for tipo_sangue in doador_form.tipo_sanguineo %}
+                                <p>
+                                    <label>
+                                        {{ tipo_sangue.tag }}
+                                        <span>{{ tipo_sangue.choice_label }}</span>
+                                    </label>
+                                </p>
+                                {% endfor %}
+                                {% if doador_form.errors.tipo_sanguineo %}
+                                <span class="helper-text red-text">{{ doador_form.errors.tipo_sanguineo }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col s12 m6">
+                            <label>RH:</label>
+                            <div class="input-field">
+                                {% for rh in doador_form.rh %}
+                                <p>
+                                    <label>
+                                        {{ rh.tag }}
+                                        <span>{{ rh.choice_label }}</span>
+                                    </label>
+                                </p>
+                                {% endfor %}
+                                {% if doador_form.errors.rh %}
+                                <span class="helper-text red-text">{{ doador_form.errors.rh }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="divider red darken-2"></div>
+                    <blockquote><span class="card-title">DADOS DA DOAÇÃO</span></blockquote>
+                    <div class="divider red darken-2"></div>
+                    <div class="input-field col s12 m6">
+                        <span>{{ doacao_form.data.label_tag }}</span>
+                        {{ doacao_form.data }}
+                        {% if doacao_form.data.errors %}
+                        {% for error in doacao_form.data.errors %}
+                        <span class="helper-text red-text">{{ error }}</span>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <span>{{ doacao_form.hora.label_tag }}</span>
+                        {{ doacao_form.hora }}
+                        {% if doacao_form.hora.errors %}
+                        {% for error in doacao_form.hora.errors %}
+                        <span class="helper-text red-text">{{ error }}</span>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <span>{{ doacao_form.volume.label_tag }}</span>
+                        {{ doacao_form.volume }}
+                        {% if doacao_form.volume.errors %}
+                        {% for error in doacao_form.volume.errors %}
+                        <span class="helper-text red-text">{{ error }}</span>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="input-field col s12">
+                    <button type="submit" class="waves-effect waves-light btn">
+                        REALIZAR DOAÇÃO
+                        <i class="material-icons left">opacity</i>
+                    </button>
+                    <a href="{% url 'main_page' %}" class="btn red">
+                        VOLTAR À TELA PRINCIPAL
+                        <i class="material-icons left">arrow_back</i>
+                    </a>
+                </div>
+        </div>
+        </form>
+    </div>
+    </div>
+</section>
+
+{% if messages %}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            {% for message in messages %}
+            <div
+                class="card-panel {% if message.tags == 'error' %}red lighten-2{% elif message.tags == 'success' %}teal lighten-2{% endif %}">
+                <span class="white-text">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}

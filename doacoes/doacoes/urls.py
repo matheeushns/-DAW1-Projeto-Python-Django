@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.urls import path
 from django.views.generic import RedirectView
 from . import views
@@ -25,4 +26,8 @@ urlpatterns = [
     path('excluir_doador/<int:doador_id>/', views.excluir_doador, name='excluir_doador'),
     path('pesquisar_doador/', views.pesquisar_doador, name='pesquisar_doador'),
     path('reativar_doador/<int:doador_id>/', views.reativar_doador, name='reativar_doador'),
+    path('cadastrar_doacao/<int:doador_id>/', views.cadastrar_doacao, name='cadastrar_doacao'),
+    path('pesquisar_doador_para_doar/', views.pesquisar_doador_para_doar, name='pesquisar_doador_para_doar'),
+    path('pesquisar_doacoes/', views.pesquisar_doacoes, name='pesquisar_doacoes'),
+    path('doacoes_doador/<int:doador_id>/', views.doacoes_doador, name='doacoes_doador'),
 ]

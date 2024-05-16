@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}PESQUISAR DOAÇÕES{% endblock title %}
+
+{% block content %}
+<section id="search-form" class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">PESQUISAR DOAÇÕES REALIZADAS</span>
+            </blockquote>
+            
+            <div class="divider red darken-2"></div>
+            <form action="{% url 'pesquisar_doacoes' %}" method="GET" novalidate>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <label for="nome_doador">NOME DO DOADOR:</label>
+                        <input type="text" name="nome_doador" id="nome_doador" class="validate">
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <label for="cpf_doador">CPF DO DOADOR:</label>
+                        <input type="text" name="cpf_doador" id="cpf_doador" class="validate" maxlength="11">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input type="date" name="data_inicio" id="data_inicio" class="validate">
+                        <label for="data_inicio" class="active">DATA INÍCIO:</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="date" name="data_fim" id="data_fim" class="validate">
+                        <label for="data_fim" class="active">DATA FIM:</label>
+                    </div>
+                </div>
+                <div class="input-field">
+                    <button type="submit" class="waves-effect waves-light btn">
+                        PESQUISAR
+                        <i class="material-icons left">search</i>
+                    </button>
+                    <a href="{% url 'main_page' %}" class="btn red">
+                        VOLTAR À TELA PRINCIPAL
+                        <i class="material-icons left">arrow_back</i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% if messages %}
+<div class="container py-4">
+    <div class="card-content">
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="card-panel red lighten-2">
+                    <span class="white-text">{{ message }}</span>
+                </div>
+            {% elif message.tags == 'success' %}
+                <div class="card-panel teal lighten-2">
+                    <span class="white-text">{{ message }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if doacoes %}
+<section id="search-results" class="container py-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">RESULTADO(S) DA PESQUISA</span>
+            </blockquote>
+            
+            <div class="divider red darken-2"></div>
+            <table class="striped centered responsive-table">
+                <thead>
+                    <tr>
+                        <th>CÓDIGO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>VOLUME(Em ml)</th>
+                        <th>DOADOR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doacao in doacoes %}
+                    <tr>
+                        <td>{{ doacao.codigo }}</td>
+                        <td>{{ doacao.data }}</td>
+                        <td>{{ doacao.hora }}</td>
+                        <td>{{ doacao.volume }} ml</td>
+                        <td>{{ doacao.codigo_doador.nome }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">NENHUMA DOAÇÃO A SER PESQUISADA</span>
+            </blockquote>
+            <div class="divider red darken-2"></div>
+            <div class="py-3 mt-3 mb-3"><br></div>
+            <p>Ainda não tivemos doações realizadas no nosso sistema para serem pesquisadas.</p>
+        </div>        
+    </div>
+    
+</div>
+{% endif %}
+{% endblock content %}

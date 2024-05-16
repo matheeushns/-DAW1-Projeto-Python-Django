@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class TipoSanguineo(models.TextChoices):
     A = 'A'
     B = 'B'
@@ -30,5 +31,7 @@ class Doacao(models.Model):
     data = models.DateField()
     hora = models.TimeField()
     volume = models.FloatField()
-    situacao = models.CharField(max_length=7,default="ATIVO")
+    situacao = models.CharField(max_length=7, default="ATIVO")
     codigo_doador = models.ForeignKey(Doador, on_delete=models.CASCADE)
+
+    

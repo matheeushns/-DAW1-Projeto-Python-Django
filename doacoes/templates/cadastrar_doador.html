@@ -28,7 +28,7 @@
                     {% endfor %}
                     {% endif %}
                 </div>
-                <div class="input-field col s12 m6">
+                <div class="input-field col s12 m6">                    
                     {{ form.contato.label_tag }}
                     {{ form.contato }}
                     {% if form.contato.errors %}
@@ -110,7 +110,7 @@
             <blockquote><span class="card-title">DOADORES CADASTRADOS</span></blockquote>
             <div class="divider red darken-2"></div>
             {% if doadores %}
-            <table class="striped bordered centered">
+            <table class="striped centered responsive-table">
                 <thead>
                     <tr>
                         <th>CÓDIGO</th>

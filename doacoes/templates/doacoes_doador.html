@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}DETALHES DO DOADOR E SUAS DOAÇÕES{% endblock title %}
+
+{% block content %}
+
+
+<section class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">DADOS DO DOADOR</span>
+            </blockquote>
+            <div class="divider red darken-2"></div>
+            <div class="py-3 mt-3 mb-3"><br></div>
+            <div class="row">
+                <div class="col s12 m6">
+                    <p><strong>NOME:</strong> {{ doador.nome }}</p>
+                    <p><strong>CPF:</strong> {{ doador.cpf }}</p>
+                    <p><strong>CONTATO:</strong> {{ doador.contato }}</p>
+                </div>
+                <div class="col s12 m6">
+                    <p><strong>TIPO SANGUÍNEO:</strong> {{ doador.get_tipo_sanguineo_display }}</p>
+                    <p><strong>RH:</strong> {{ doador.get_rh_display }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if doacoes %}
+<section class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">DOAÇÕES DO DOADOR</span>
+            </blockquote>
+            <div class="divider red darken-2"></div>
+            <div class="py-3 mt-3 mb-3"><br></div>
+            <div class="row">
+                {% for doacao in doacoes %}
+                <div class="col s12 m6">
+                    <div class="card blue-grey darken-1">
+                        <div class="card-content white-text">
+                            <span class="card-title">Doação realizada em {{ doacao.data }}</span>
+                            <p><strong>Volume:</strong> {{ doacao.volume }} ml</p>
+                            <p><strong>Data:</strong> {{ doacao.data }}</p>
+                            <p><strong>Hora:</strong> {{ doacao.hora }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <a href="{% url 'pesquisar_doador_para_doar' %}" class="btn red">
+                VOLTAR
+                <i class="material-icons left">arrow_back</i>
+            </a>
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">NENHUMA DOAÇÃO REALIZADA</span>
+            </blockquote>
+            <div class="divider red darken-2"></div>
+            <div class="py-3 mt-3 mb-3"><br></div>
+            <p>O(A) doador(a) <strong>{{ doador.nome }}</strong> ainda não realizou nenhuma doação de sangue.</p>
+        </div>        
+    </div>
+    
+</div>
+<div class="container">
+    <a href="{% url 'pesquisar_doador_para_doar' %}" class="btn red">
+        VOLTAR
+        <i class="material-icons left">arrow_back</i>
+    </a>
+</div>
+{% endif %}
+
+{% endblock content %}
