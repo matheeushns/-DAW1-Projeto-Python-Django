@@ -11,17 +11,9 @@
             </blockquote>
             
             <div class="divider red darken-2"></div>
+            <br>
             <form action="{% url 'pesquisar_doacoes' %}" method="GET" novalidate>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <label for="nome_doador">NOME DO DOADOR:</label>
-                        <input type="text" name="nome_doador" id="nome_doador" class="validate">
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <label for="cpf_doador">CPF DO DOADOR:</label>
-                        <input type="text" name="cpf_doador" id="cpf_doador" class="validate" maxlength="11">
-                    </div>
-                </div>
+                
                 <div class="row">
                     <div class="input-field col s12 m6">
                         <input type="date" name="data_inicio" id="data_inicio" class="validate">

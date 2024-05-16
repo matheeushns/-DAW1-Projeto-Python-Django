@@ -147,17 +147,11 @@ def pesquisar_doador_para_doar(request):
     return redirect('pesquisar_doador_para_doar')
 
 def pesquisar_doacoes(request):
-    nome_doador = request.GET.get('nome_doador')
-    cpf_doador = request.GET.get('cpf_doador')
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
 
     doacoes = Doacao.objects.select_related('codigo_doador')
 
-    if nome_doador:
-        doacoes = doacoes.filter(codigo_doador__nome__icontains=nome_doador)
-    if cpf_doador:
-        doacoes = doacoes.filter(codigo_doador__cpf=cpf_doador)
     if data_inicio:
         doacoes = doacoes.filter(data__gte=data_inicio)
     if data_fim:
