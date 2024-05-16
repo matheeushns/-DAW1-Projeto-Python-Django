@@ -106,11 +106,9 @@ def cadastrar_doacao(request, doador_id):
             doacao.codigo_doador = doador
             doacao.save()
             doador = doador_form.save(commit=False)
-            tipo_sanguineo = doador_form.cleaned_data['tipo_sanguineo']
-            rh = doador_form.cleaned_data['rh']
             doador.tipo_rh_corretos = True
-            doador.tipo_sanguineo = tipo_sanguineo
-            doador.rh = rh
+            doador.tipo_sanguineo =  doador_form.cleaned_data['tipo_sanguineo']
+            doador.rh = doador_form.cleaned_data['rh']
             doador.save()
             messages.success(request, f'A doação para o(a) doador(a) {doador.nome} foi realizada com sucesso!')
             return redirect('pesquisar_doador_para_doar')
