@@ -107,21 +107,19 @@ def cadastrar_doacao(request, doador_id):
             doacao.save()
             doador = doador_form.save(commit=False)
             doador.tipo_rh_corretos = True
-            doador.tipo_sanguineo =  doador_form.cleaned_data['tipo_sanguineo']
+            doador.tipo_sanguineo = doador_form.cleaned_data['tipo_sanguineo']
             doador.rh = doador_form.cleaned_data['rh']
             doador.save()
             messages.success(request, f'A doação para o(a) doador(a) {doador.nome} foi realizada com sucesso!')
             return redirect('pesquisar_doador_para_doar')
         else:
-            doador_form = DoadorUpdateForm(instance=doador)
             messages.error(request, 'Erro ao realizar doação. Verifique os dados.')
-            context = {'doacao_form': doacao_form, 'doador_form': doador_form}
-            return render(request, 'cadastrar_doacao.html', context)
     else:
         doacao_form = DoacaoForm()
         doador_form = DoadorUpdateForm(instance=doador)
-        context = {'doacao_form': doacao_form, 'doador_form': doador_form}
-        return render(request, 'cadastrar_doacao.html', context)
+    
+    context = {'doacao_form': doacao_form, 'doador_form': doador_form}
+    return render(request, 'cadastrar_doacao.html', context)
 
 def pesquisar_doador_para_doar(request):
     if request.method == 'GET':
@@ -149,7 +147,6 @@ def pesquisar_doador_para_doar(request):
 def pesquisar_doacoes(request):
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
-
     doacoes = Doacao.objects.select_related('codigo_doador')
 
     if data_inicio:
@@ -158,13 +155,16 @@ def pesquisar_doacoes(request):
         doacoes = doacoes.filter(data__lte=data_fim)
 
     if not doacoes.exists():
-            messages.error(request, 'Não foram encontradas doações com os critérios informados.')
-            return render(request, 'pesquisar_doacoes.html')
-    
+        messages.error(request, 'Não foram encontradas doações com os critérios informados.')
+        doacoes = None
+
     context = {
         'doacoes': doacoes,
+        'data_inicio': data_inicio,
+        'data_fim': data_fim
     }
     return render(request, 'pesquisar_doacoes.html', context)
+
 
 def doacoes_doador(request, doador_id):
     doador = get_object_or_404(Doador, pk=doador_id)

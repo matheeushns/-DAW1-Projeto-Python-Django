@@ -8,19 +8,17 @@
         <div class="card-content">
             <blockquote>
                 <span class="card-title">PESQUISAR DOAÇÕES REALIZADAS</span>
-            </blockquote>
-            
+            </blockquote>            
             <div class="divider red darken-2"></div>
             <br>
             <form action="{% url 'pesquisar_doacoes' %}" method="GET" novalidate>
-                
                 <div class="row">
                     <div class="input-field col s12 m6">
-                        <input type="date" name="data_inicio" id="data_inicio" class="validate">
+                        <input type="date" name="data_inicio" id="data_inicio" class="validate" value="{{ data_inicio|default:'' }}">
                         <label for="data_inicio" class="active">DATA INÍCIO:</label>
                     </div>
                     <div class="input-field col s12 m6">
-                        <input type="date" name="data_fim" id="data_fim" class="validate">
+                        <input type="date" name="data_fim" id="data_fim" class="validate" value="{{ data_fim|default:'' }}">
                         <label for="data_fim" class="active">DATA FIM:</label>
                     </div>
                 </div>
@@ -103,7 +101,6 @@
             <p>Ainda não tivemos doações realizadas no nosso sistema para serem pesquisadas.</p>
         </div>        
     </div>
-    
 </div>
 {% endif %}
 {% endblock content %}
