@@ -132,11 +132,17 @@ def pesquisar_doador_para_doar(request):
         if cpf:
             doadores = doadores.filter(cpf=cpf)
 
+        context = {
+            'doadores': doadores,
+            'nome': nome,
+            'cpf': cpf
+            }
+        
         if not doadores.exists():
             messages.error(request, 'Não foram encontrados doadores com os critérios informados.')
-            return render(request, 'pesquisar_doador_para_doar.html')
+            return render(request, 'pesquisar_doador_para_doar.html', context)
 
-        return render(request, 'pesquisar_doador_para_doar.html', {'doadores': doadores})
+        return render(request, 'pesquisar_doador_para_doar.html', context)
     
     doador_id = request.POST.get('doador_id')
     if doador_id:
@@ -147,7 +153,7 @@ def pesquisar_doador_para_doar(request):
 def pesquisar_doacoes(request):
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
-    doacoes = Doacao.objects.select_related('codigo_doador')
+    doacoes = Doacao.objects.select_related('codigo_doador').order_by('data')
 
     if data_inicio:
         doacoes = doacoes.filter(data__gte=data_inicio)
