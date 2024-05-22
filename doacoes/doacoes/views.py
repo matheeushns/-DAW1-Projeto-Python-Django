@@ -77,11 +77,19 @@ def pesquisar_doador(request):
         if cpf:
             doadores = doadores.filter(cpf=cpf)
 
+    context = {
+        'doadores': doadores,
+        'nome': nome,
+        'cpf': cpf,
+        'tipo_sanguineo': tipo_sanguineo,
+        'rh': rh
+    }
+
     if doadores is None or not doadores.exists():
         messages.error(request,'Não foram encontrados doadores com os critérios informados.')
-        return render(request, 'pesquisar_doador.html')
+        return render(request, 'pesquisar_doador.html', context)
     
-    return render(request, 'pesquisar_doador.html', {'doadores': doadores})
+    return render(request, 'pesquisar_doador.html', context)
 
 def reativar_doador(request, doador_id):
     doador = get_object_or_404(Doador, pk=doador_id)
