@@ -152,7 +152,6 @@ def pesquisar_doador(request):
         cpf = request.GET.get('cpf')
         doadores = Doador.objects.filter(situacao='ATIVO').order_by('codigo')
 
-
         if tipo_sanguineo and tipo_sanguineo != 'Todos':
             doadores = doadores.filter(tipo_sanguineo=tipo_sanguineo)
         if rh and rh != 'Todos':
@@ -162,11 +161,19 @@ def pesquisar_doador(request):
         if cpf:
             doadores = doadores.filter(cpf=cpf)
 
+    context = {
+        'doadores': doadores,
+        'nome': nome,
+        'cpf': cpf,
+        'tipo_sanguineo': tipo_sanguineo,
+        'rh': rh
+    }
+
     if doadores is None or not doadores.exists():
         messages.error(request,'Não foram encontrados doadores com os critérios informados.')
-        return render(request, 'pesquisar_doador.html')
+        return render(request, 'pesquisar_doador.html', context)
     
-    return render(request, 'pesquisar_doador.html', {'doadores': doadores})
+    return render(request, 'pesquisar_doador.html', context)
 
 def reativar_doador(request, doador_id):
     doador = get_object_or_404(Doador, pk=doador_id)
@@ -673,11 +680,11 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
                 <div class="row">
                     <div class="input-field col s12 m6">
                         <label for="nome">NOME:</label>
-                        <input type="text" name="nome" id="nome" class="validate">
+                        <input type="text" name="nome" id="nome" class="validate" value="{{ nome|default:'' }}">
                     </div>
                     <div class="input-field col s12 m6">
                         <label for="cpf">CPF:</label>
-                        <input type="text" name="cpf" id="cpf" class="validate" maxlength="11">
+                        <input type="text" name="cpf" id="cpf" class="validate" maxlength="11" value="{{ cpf|default:'' }}">
                     </div>
                 </div>
                 <div class="row">
@@ -686,31 +693,31 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
                         <div class="input-field">
                             <p>
                                 <label>
-                                    <input name="tipo_sanguineo" type="radio" value="A" class="with-gap"/>
+                                    <input name="tipo_sanguineo" type="radio" value="A" class="with-gap" {% if tipo_sanguineo == 'A' %}checked{% endif %}/>
                                     <span>A</span>
                                 </label>
                             </p>
                             <p>
                                 <label>
-                                    <input name="tipo_sanguineo" type="radio" value="B" class="with-gap"/>
+                                    <input name="tipo_sanguineo" type="radio" value="B" class="with-gap" {% if tipo_sanguineo == 'B' %}checked{% endif %}/>
                                     <span>B</span>
                                 </label>
                             </p>
                             <p>
                                 <label>
-                                    <input name="tipo_sanguineo" type="radio" value="AB" class="with-gap"/>
+                                    <input name="tipo_sanguineo" type="radio" value="AB" class="with-gap" {% if tipo_sanguineo == 'AB' %}checked{% endif %}/>
                                     <span>AB</span>
                                 </label>
                             </p>
                             <p>
                                 <label>
-                                    <input name="tipo_sanguineo" type="radio" value="O" class="with-gap"/>
+                                    <input name="tipo_sanguineo" type="radio" value="O" class="with-gap" {% if tipo_sanguineo == 'O' %}checked{% endif %}/>
                                     <span>O</span>
                                 </label>
                             </p>
                             <p>
                                 <label>
-                                    <input name="tipo_sanguineo" type="radio" value="Todos" checked="true" class="with-gap" />
+                                    <input name="tipo_sanguineo" type="radio" value="Todos" class="with-gap" {% if tipo_sanguineo == 'Todos' %}checked{% endif %}/>
                                     <span>Todos</span>
                                 </label>
                             </p>
@@ -721,19 +728,19 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
                         <div class="input-field">
                             <p>
                                 <label>
-                                    <input name="rh" type="radio" value="POSITIVO" class="with-gap"/>
+                                    <input name="rh" type="radio" value="POSITIVO" class="with-gap" {% if rh == 'POSITIVO' %}checked{% endif %}/>
                                     <span>POSITIVO</span>
                                 </label>
                             </p>
                             <p>
                                 <label>
-                                    <input name="rh" type="radio" value="NEGATIVO" class="with-gap"/>
+                                    <input name="rh" type="radio" value="NEGATIVO" class="with-gap" {% if rh == 'NEGATIVO' %}checked{% endif %}/>
                                     <span>NEGATIVO</span>
                                 </label>
                             </p>
                             <p>
                                 <label>
-                                    <input name="rh" type="radio" value="Todos" checked="true" class="with-gap"/>
+                                    <input name="rh" type="radio" value="Todos" class="with-gap" {% if rh == 'Todos' %}checked{% endif %}/>
                                     <span>Todos</span>
                                 </label>
                             </p>
