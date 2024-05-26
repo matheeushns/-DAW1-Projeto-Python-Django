@@ -4,6 +4,7 @@
 ### Integrantes do grupo:
 * Luis Alberto Carvalho Gomes
 * Matheus Henrique Nunes da Silva
+* Ranieri Sousa Massini
 
 ### Aplicação de Doação de Sangue
 
