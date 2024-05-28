@@ -24,4 +24,4 @@
 
 - [x] [7ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/26deedb1f333262ca9c37b324235f596c9b35b66/1a%20Etapa/7aEtapa.md)
 
-- [ ] [8ª Etapa]()
+- [ ] [8ª Etapa](https://github.com/matheeushns/-DAW1-Projeto-Python-Django/blob/6b19e4dbb8f85f6755820bb63a99fd986b63e567/1a%20Etapa/8aEtapa.md)
