@@ -96,7 +96,7 @@ class DoadorUpdateForm(forms.ModelForm):
 **5.** Em `urls.py`, adicione o seguinte código abaixo do existente dentro do bloco `urlpatterns`.
 
 ``` Python
-path('cadastrar_doacao/<int:doador_id>/', views.cadastrar_doacao, name='cadastrar_doacao'),
+    path('cadastrar_doacao/<int:doador_id>/', views.cadastrar_doacao, name='cadastrar_doacao'),
     path('pesquisar_doador_para_doar/', views.pesquisar_doador_para_doar, name='pesquisar_doador_para_doar'),
     path('pesquisar_doacoes/', views.pesquisar_doacoes, name='pesquisar_doacoes'),
     path('doacoes_doador/<int:doador_id>/', views.doacoes_doador, name='doacoes_doador'),
@@ -105,6 +105,99 @@ path('cadastrar_doacao/<int:doador_id>/', views.cadastrar_doacao, name='cadastra
 **6.** Em `views.py`, adicione o código abaixo no código existente.
 
 ``` Python
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Doador, Doacao
+from .forms import DoadorForm, DoacaoForm, DoadorUpdateForm
+from django.urls import reverse
+import datetime
+
+
+def cadastrar_doador(request):
+    if request.method == 'POST':
+        form = DoadorForm(request.POST)
+        if form.is_valid():
+            if Doador.objects.filter(cpf=form.cleaned_data['cpf']).exists():
+                cpf=form.cleaned_data['cpf']
+                messages.error(request, f'CPF {cpf} já cadastrado!')
+            else:
+                nome = form.cleaned_data['nome']
+                form.save()
+                messages.success(request, f'Doador(a) {nome} cadastrado(a) com sucesso!')
+                form = DoadorForm()
+                doadores = Doador.objects.all().order_by('codigo')
+                context = {'form': form, 'doadores': doadores}
+                return render(request, 'cadastrar_doador.html', context)
+        else:
+            messages.error(request, 'Erro ao cadastrar doador. Verifique os dados.')
+    else:
+        form = DoadorForm()
+    
+    doadores = Doador.objects.all()
+    context = {'form': form, 'doadores': doadores}
+    return render(request, 'cadastrar_doador.html', context)
+
+def editar_doador(request, doador_id):
+    doador = get_object_or_404(Doador, pk=doador_id)
+
+    if request.method == 'POST':
+        form = DoadorForm(request.POST, instance=doador)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Doador(a) {doador.nome} editado(a) com sucesso.")
+            return redirect(reverse('pesquisar_doador') + f'?nome={doador.nome}&cpf={doador.cpf}&tipo_sanguineo=Todos&rh=Todos')
+    else:
+        form = DoadorForm(instance=doador)
+    context = {'form': form, 'doador': doador}
+    return render(request, 'editar_doador.html', context)
+
+def excluir_doador(request, doador_id):
+    doador = get_object_or_404(Doador, pk=doador_id)
+
+    if request.method == 'POST':
+        doador.situacao = 'INATIVO'
+        doador.save()
+        messages.success(request, f"O(A) doador(a) {doador.nome} foi excluído(a) com sucesso.")
+        return redirect(reverse('pesquisar_doador') + f'?tipo_sanguineo=Todos&rh=Todos')
+
+    return render(request, 'excluir_doador.html', {'doador': doador})
+
+def pesquisar_doador(request):
+    doadores = None
+
+    if request.method == 'GET':
+        tipo_sanguineo = request.GET.get('tipo_sanguineo')
+        rh = request.GET.get('rh')
+        nome = request.GET.get('nome')
+        cpf = request.GET.get('cpf')
+        doadores = Doador.objects.filter(situacao='ATIVO').order_by('codigo')
+
+
+        if tipo_sanguineo and tipo_sanguineo != 'Todos':
+            doadores = doadores.filter(tipo_sanguineo=tipo_sanguineo)
+        if rh and rh != 'Todos':
+            doadores = doadores.filter(rh=rh)
+        if nome:
+            doadores = doadores.filter(nome__icontains=nome)
+        if cpf:
+            doadores = doadores.filter(cpf=cpf)
+
+    if doadores is None or not doadores.exists():
+        messages.error(request,'Não foram encontrados doadores com os critérios informados.')
+        return render(request, 'pesquisar_doador.html')
+    
+    return render(request, 'pesquisar_doador.html', {'doadores': doadores})
+
+def reativar_doador(request, doador_id):
+    doador = get_object_or_404(Doador, pk=doador_id)
+
+    if doador.situacao == 'INATIVO':
+        doador.situacao = 'ATIVO'
+        doador.save()
+        messages.success(request, f'O doador {doador.nome} teve o status alterado para "ATIVO".')
+    
+    return render(request, 'pesquisar_doador.html')
+
 def cadastrar_doacao(request, doador_id):
     doador = get_object_or_404(Doador, pk=doador_id)
     if request.method == 'POST':
@@ -114,7 +207,7 @@ def cadastrar_doacao(request, doador_id):
             doacao = doacao_form.save(commit=False)
             doacao.codigo_doador = doador
             doacao.save()
-	doador = doador_form.save(commit=False)
+            doador = doador_form.save(commit=False)
             doador.tipo_rh_corretos = True
             doador.tipo_sanguineo = doador_form.cleaned_data['tipo_sanguineo']
             doador.rh = doador_form.cleaned_data['rh']
@@ -162,7 +255,7 @@ def pesquisar_doador_para_doar(request):
 def pesquisar_doacoes(request):
     data_inicio = request.GET.get('data_inicio')
     data_fim = request.GET.get('data_fim')
-    doacoes = Doacao.objects.select_related('codigo_doador').order_by(‘data’)
+    doacoes = Doacao.objects.select_related('codigo_doador').order_by('data')
 
     if data_inicio:
         doacoes = doacoes.filter(data__gte=data_inicio)
@@ -185,7 +278,9 @@ def doacoes_doador(request, doador_id):
     doador = get_object_or_404(Doador, pk=doador_id)
     doacoes = Doacao.objects.filter(codigo_doador=doador_id).order_by('-data')
     return render(request, 'doacoes_doador.html', {'doador': doador, 'doacoes': doacoes})
-```
+
+def main_page(request):
+    return render(request, 'main_page.html')
 
 **PS:** a parte de imports (topo do arquivo `views.py`) deve ficar assim após as adições abaixo:
 
