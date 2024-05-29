@@ -105,13 +105,6 @@ class DoadorUpdateForm(forms.ModelForm):
 **6.** Em `views.py`, adicione o código abaixo no código existente.
 
 ``` Python
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import Doador, Doacao
-from .forms import DoadorForm, DoacaoForm, DoadorUpdateForm
-from django.urls import reverse
-import datetime
-
 
 def cadastrar_doador(request):
     if request.method == 'POST':
@@ -281,16 +274,6 @@ def doacoes_doador(request, doador_id):
 
 def main_page(request):
     return render(request, 'main_page.html')
-
-**PS:** a parte de imports (topo do arquivo `views.py`) deve ficar assim após as adições abaixo:
-
-``` Python
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import Doador, Doacao
-from .forms import DoadorForm, DoacaoForm, DoadorUpdateForm
-from django.urls import reverse
-import datetime
 ```
 
 **7.** Na pasta **templates**, crie a página `cadastrar_doacao.html` e cole o código abaixo.
