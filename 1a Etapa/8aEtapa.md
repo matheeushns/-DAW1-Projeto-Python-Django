@@ -579,7 +579,7 @@ import datetime
 {% endblock content %}
 ```
 
-**10.** Crie a `página pesquisar_doacao.html` dentro da pasta **templates** e cole o código abaixo.
+**10.** Crie a página `pesquisar_doacao.html` dentro da pasta **templates** e cole o código abaixo.
 
 ``` HTML
 {% extends 'base.html' %}
