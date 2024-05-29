@@ -89,8 +89,8 @@ STATICFILES_DIRS = [
 ``` Python
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Doador
-from .forms import DoadorForm
+from .models import Doador, Doacao
+from .forms import DoadorForm, DoacaoForm, DoadorUpdateForm
 from django.urls import reverse
 
 def cadastrar_doador(request):
@@ -193,10 +193,10 @@ def main_page(request):
 
 ``` Python
 from django import forms
-from .models import Doador, TipoSanguineo, RH
-from django.core.validators import RegexValidator
+from .models import Doador, TipoSanguineo, RH, Doacao
+from django.core.validators import RegexValidator, MinValueValidator
 from django.forms.widgets import RadioSelect
-
+import datetime
 
 class DoadorForm(forms.ModelForm):
     class Meta:
