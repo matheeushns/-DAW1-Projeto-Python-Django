@@ -271,9 +271,6 @@ def doacoes_doador(request, doador_id):
     doador = get_object_or_404(Doador, pk=doador_id)
     doacoes = Doacao.objects.filter(codigo_doador=doador_id).order_by('-data')
     return render(request, 'doacoes_doador.html', {'doador': doador, 'doacoes': doacoes})
-
-def main_page(request):
-    return render(request, 'main_page.html')
 ```
 
 **7.** Na pasta **templates**, crie a página `cadastrar_doacao.html` e cole o código abaixo.
