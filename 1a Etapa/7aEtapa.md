@@ -92,6 +92,7 @@ from django.contrib import messages
 from .models import Doador, Doacao
 from .forms import DoadorForm, DoacaoForm, DoadorUpdateForm
 from django.urls import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def cadastrar_doador(request):
     if request.method == 'POST':
@@ -105,15 +106,22 @@ def cadastrar_doador(request):
                 form.save()
                 messages.success(request, f'Doador(a) {nome} cadastrado(a) com sucesso!')
                 form = DoadorForm()
-                doadores = Doador.objects.all().order_by('codigo')
-                context = {'form': form, 'doadores': doadores}
-                return render(request, 'cadastrar_doador.html', context)
         else:
             messages.error(request, 'Erro ao cadastrar doador. Verifique os dados.')
     else:
         form = DoadorForm()
-    
-    doadores = Doador.objects.all()
+
+    doadores_list = Doador.objects.all().order_by('codigo')
+    paginator = Paginator(doadores_list, 5)
+    page = request.GET.get('page')
+
+    try:
+        doadores = paginator.page(page)
+    except PageNotAnInteger:
+        doadores = paginator.page(1)
+    except EmptyPage:
+        doadores = paginator.page(paginator.num_pages)
+
     context = {'form': form, 'doadores': doadores}
     return render(request, 'cadastrar_doador.html', context)
 
@@ -123,9 +131,11 @@ def editar_doador(request, doador_id):
     if request.method == 'POST':
         form = DoadorForm(request.POST, instance=doador)
         if form.is_valid():
+            nome = form.cleaned_data['nome']
+            cpf = form.cleaned_data['cpf']
             form.save()
             messages.success(request, f"Doador(a) {doador.nome} editado(a) com sucesso.")
-            return redirect(reverse('pesquisar_doador') + f'?nome={doador.nome}&cpf={doador.cpf}&tipo_sanguineo=Todos&rh=Todos')
+            return redirect(reverse('pesquisar_doador') + f'?nome={nome}&cpf={cpf}')
     else:
         form = DoadorForm(instance=doador)
     context = {'form': form, 'doador': doador}
@@ -138,12 +148,17 @@ def excluir_doador(request, doador_id):
         doador.situacao = 'INATIVO'
         doador.save()
         messages.success(request, f"O(A) doador(a) {doador.nome} foi excluído(a) com sucesso.")
-        return redirect(reverse('pesquisar_doador') + f'?tipo_sanguineo=Todos&rh=Todos')
+        return redirect(reverse('pesquisar_doador') + f'?nome=''&cpf=''&tipo_sanguineo=Todos&rh=Todos')
 
     return render(request, 'excluir_doador.html', {'doador': doador})
 
+
 def pesquisar_doador(request):
     doadores = None
+    tipo_sanguineo = None
+    rh = None
+    nome = None
+    cpf = None
 
     if request.method == 'GET':
         tipo_sanguineo = request.GET.get('tipo_sanguineo')
@@ -161,8 +176,12 @@ def pesquisar_doador(request):
         if cpf:
             doadores = doadores.filter(cpf=cpf)
 
+        paginator = Paginator(doadores, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
     context = {
-        'doadores': doadores,
+        'page_obj': page_obj,
         'nome': nome,
         'cpf': cpf,
         'tipo_sanguineo': tipo_sanguineo,
@@ -170,7 +189,7 @@ def pesquisar_doador(request):
     }
 
     if doadores is None or not doadores.exists():
-        messages.error(request,'Não foram encontrados doadores com os critérios informados.')
+        messages.error(request, 'Não foram encontrados doadores com os critérios informados.')
         return render(request, 'pesquisar_doador.html', context)
     
     return render(request, 'pesquisar_doador.html', context)
@@ -340,7 +359,7 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
                     {% endfor %}
                     {% endif %}
                 </div>
-                <div class="input-field col s12 m6">
+                <div class="input-field col s12 m6">                    
                     {{ form.contato.label_tag }}
                     {{ form.contato }}
                     {% if form.contato.errors %}
@@ -398,7 +417,6 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
     </div>
 </section>
 
-
 {% if messages %}
 <div class="container">
     <div class="row">
@@ -414,15 +432,13 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
 </div>
 {% endif %}
 
-
-
 <section id="doadores" class="container py-4 mb-4">
     <div class="card border">
         <div class="card-content">
             <blockquote><span class="card-title">DOADORES CADASTRADOS</span></blockquote>
             <div class="divider red darken-2"></div>
             {% if doadores %}
-            <table class="striped bordered centered">
+            <table class="striped centered responsive-table">
                 <thead>
                     <tr>
                         <th>CÓDIGO</th>
@@ -448,6 +464,36 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
                     {% endfor %}
                 </tbody>
             </table>
+
+            <div class="row center">
+                <ul class="pagination">
+                    {% if doadores.has_previous %}
+                    <li class="waves-effect">
+                        <a href="?page=1"><i class="material-icons">first_page</i></a>
+                    </li>
+                    <li class="waves-effect">
+                        <a href="?page={{ doadores.previous_page_number }}"><i class="material-icons">chevron_left</i></a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in doadores.paginator.page_range %}
+                    {% if doadores.number == num %}
+                    <li class="active"><a href="?page={{ num }}">{{ num }}</a></li>
+                    {% elif num > doadores.number|add:'-3' and num < doadores.number|add:'3' %}
+                    <li class="waves-effect"><a href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if doadores.has_next %}
+                    <li class="waves-effect">
+                        <a href="?page={{ doadores.next_page_number }}"><i class="material-icons">chevron_right</i></a>
+                    </li>
+                    <li class="waves-effect">
+                        <a href="?page={{ doadores.paginator.num_pages }}"><i class="material-icons">last_page</i></a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
             {% else %}
             <div class="card-panel">
                 <p>Nenhum doador cadastrado ainda.</p>
@@ -763,7 +809,6 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
 </section>
 
 {% if messages %}
-{% if messages %}
 <div class="container py-4">
     <div class="card-content">
         {% for message in messages %}
@@ -779,11 +824,9 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
         {% endfor %}
     </div>
 </div>
-{% endif %}
 {% else %}
-{% if doadores %}
+{% if page_obj %}
 <section id="search-results" class="container py-4">
-
     <div class="card border">
         <div class="card-content">
             <blockquote>
@@ -791,7 +834,7 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
             </blockquote>
             
             <div class="divider red darken-2"></div>
-            <table class="striped centered">
+            <table class="striped centered responsive-table">
                 <thead>
                     <tr>
                         <th>CÓDIGO</th>
@@ -805,7 +848,7 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
                     </tr>
                 </thead>
                 <tbody>
-                    {% for doador in doadores %}
+                    {% for doador in page_obj %}
                     <tr>
                         <td>{{ doador.codigo }}</td>
                         <td>{{ doador.nome }}</td>
@@ -823,9 +866,49 @@ https://github.com/Dogfalo/materialize/releases/download/1.0.0/materialize-v1.0.
                     {% endfor %}
                 </tbody>
             </table>
+            <div class="center-align">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="waves-effect">
+                            <a href="?{% if nome %}nome={{ nome }}&{% endif %}{% if cpf %}cpf={{ cpf }}&{% endif %}{% if tipo_sanguineo %}tipo_sanguineo={{ tipo_sanguineo }}&{% endif %}{% if rh %}rh={{ rh }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                                <i class="material-icons">chevron_left</i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#!">
+                                <i class="material-icons">chevron_left</i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="active">
+                                <a href="#!">{{ num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="waves-effect">
+                                <a href="?{% if nome %}nome={{ nome }}&{% endif %}{% if cpf %}cpf={{ cpf }}&{% endif %}{% if tipo_sanguineo %}tipo_sanguineo={{ tipo_sanguineo }}&{% endif %}{% if rh %}rh={{ rh }}&{% endif %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="waves-effect">
+                            <a href="?{% if nome %}nome={{ nome }}&{% endif %}{% if cpf %}cpf={{ cpf }}&{% endif %}{% if tipo_sanguineo %}tipo_sanguineo={{ tipo_sanguineo }}&{% endif %}{% if rh %}rh={{ rh }}&{% endif %}page={{ page_obj.next_page_number }}">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#!">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
-
 </section>
 {% endif %}
 {% endif %}
