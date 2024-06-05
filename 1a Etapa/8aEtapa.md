@@ -106,91 +106,6 @@ class DoadorUpdateForm(forms.ModelForm):
 
 ``` Python
 
-def cadastrar_doador(request):
-    if request.method == 'POST':
-        form = DoadorForm(request.POST)
-        if form.is_valid():
-            if Doador.objects.filter(cpf=form.cleaned_data['cpf']).exists():
-                cpf=form.cleaned_data['cpf']
-                messages.error(request, f'CPF {cpf} já cadastrado!')
-            else:
-                nome = form.cleaned_data['nome']
-                form.save()
-                messages.success(request, f'Doador(a) {nome} cadastrado(a) com sucesso!')
-                form = DoadorForm()
-                doadores = Doador.objects.all().order_by('codigo')
-                context = {'form': form, 'doadores': doadores}
-                return render(request, 'cadastrar_doador.html', context)
-        else:
-            messages.error(request, 'Erro ao cadastrar doador. Verifique os dados.')
-    else:
-        form = DoadorForm()
-    
-    doadores = Doador.objects.all()
-    context = {'form': form, 'doadores': doadores}
-    return render(request, 'cadastrar_doador.html', context)
-
-def editar_doador(request, doador_id):
-    doador = get_object_or_404(Doador, pk=doador_id)
-
-    if request.method == 'POST':
-        form = DoadorForm(request.POST, instance=doador)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f"Doador(a) {doador.nome} editado(a) com sucesso.")
-            return redirect(reverse('pesquisar_doador') + f'?nome={doador.nome}&cpf={doador.cpf}&tipo_sanguineo=Todos&rh=Todos')
-    else:
-        form = DoadorForm(instance=doador)
-    context = {'form': form, 'doador': doador}
-    return render(request, 'editar_doador.html', context)
-
-def excluir_doador(request, doador_id):
-    doador = get_object_or_404(Doador, pk=doador_id)
-
-    if request.method == 'POST':
-        doador.situacao = 'INATIVO'
-        doador.save()
-        messages.success(request, f"O(A) doador(a) {doador.nome} foi excluído(a) com sucesso.")
-        return redirect(reverse('pesquisar_doador') + f'?tipo_sanguineo=Todos&rh=Todos')
-
-    return render(request, 'excluir_doador.html', {'doador': doador})
-
-def pesquisar_doador(request):
-    doadores = None
-
-    if request.method == 'GET':
-        tipo_sanguineo = request.GET.get('tipo_sanguineo')
-        rh = request.GET.get('rh')
-        nome = request.GET.get('nome')
-        cpf = request.GET.get('cpf')
-        doadores = Doador.objects.filter(situacao='ATIVO').order_by('codigo')
-
-
-        if tipo_sanguineo and tipo_sanguineo != 'Todos':
-            doadores = doadores.filter(tipo_sanguineo=tipo_sanguineo)
-        if rh and rh != 'Todos':
-            doadores = doadores.filter(rh=rh)
-        if nome:
-            doadores = doadores.filter(nome__icontains=nome)
-        if cpf:
-            doadores = doadores.filter(cpf=cpf)
-
-    if doadores is None or not doadores.exists():
-        messages.error(request,'Não foram encontrados doadores com os critérios informados.')
-        return render(request, 'pesquisar_doador.html')
-    
-    return render(request, 'pesquisar_doador.html', {'doadores': doadores})
-
-def reativar_doador(request, doador_id):
-    doador = get_object_or_404(Doador, pk=doador_id)
-
-    if doador.situacao == 'INATIVO':
-        doador.situacao = 'ATIVO'
-        doador.save()
-        messages.success(request, f'O doador {doador.nome} teve o status alterado para "ATIVO".')
-    
-    return render(request, 'pesquisar_doador.html')
-
 def cadastrar_doacao(request, doador_id):
     doador = get_object_or_404(Doador, pk=doador_id)
     if request.method == 'POST':
@@ -220,6 +135,7 @@ def pesquisar_doador_para_doar(request):
     if request.method == 'GET':
         nome = request.GET.get('nome')
         cpf = request.GET.get('cpf')
+
         doadores = Doador.objects.filter(situacao='ATIVO').order_by('codigo')
 
         if nome:
@@ -227,15 +143,18 @@ def pesquisar_doador_para_doar(request):
         if cpf:
             doadores = doadores.filter(cpf=cpf)
 
+        paginator = Paginator(doadores, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        if not page_obj:
+            messages.error(request, 'Não foram encontrados doadores com os critérios informados.')
+
         context = {
-            'doadores': doadores,
+            'page_obj': page_obj,
             'nome': nome,
             'cpf': cpf
-            }
-        
-        if not doadores.exists():
-            messages.error(request, 'Não foram encontrados doadores com os critérios informados.')
-            return render(request, 'pesquisar_doador_para_doar.html', context)
+        }
 
         return render(request, 'pesquisar_doador_para_doar.html', context)
     
@@ -255,12 +174,15 @@ def pesquisar_doacoes(request):
     if data_fim:
         doacoes = doacoes.filter(data__lte=data_fim)
 
-    if not doacoes.exists():
+    paginator = Paginator(doacoes, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    if not page_obj:
         messages.error(request, 'Não foram encontradas doações com os critérios informados.')
-        doacoes = None
 
     context = {
-        'doacoes': doacoes,
+        'page_obj': page_obj,
         'data_inicio': data_inicio,
         'data_fim': data_fim
     }
@@ -559,7 +481,7 @@ def doacoes_doador(request, doador_id):
 {% endblock content %}
 ```
 
-**10.** Crie a página `pesquisar_doacao.html` dentro da pasta **templates** e cole o código abaixo.
+**10.** Crie a página `pesquisar_doacoes.html` dentro da pasta **templates** e cole o código abaixo.
 
 ``` HTML
 {% extends 'base.html' %}
@@ -619,7 +541,7 @@ def doacoes_doador(request, doador_id):
 </div>
 {% endif %}
 
-{% if doacoes %}
+{% if page_obj %}
 <section id="search-results" class="container py-4">
     <div class="card border">
         <div class="card-content">
@@ -639,7 +561,7 @@ def doacoes_doador(request, doador_id):
                     </tr>
                 </thead>
                 <tbody>
-                    {% for doacao in doacoes %}
+                    {% for doacao in page_obj %}
                     <tr>
                         <td>{{ doacao.codigo }}</td>
                         <td>{{ doacao.data }}</td>
@@ -650,6 +572,47 @@ def doacoes_doador(request, doador_id):
                     {% endfor %}
                 </tbody>
             </table>
+            <div class="center-align">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="waves-effect">
+                            <a href="?{% if data_inicio %}data_inicio={{ data_inicio }}&{% endif %}{% if data_fim %}data_fim={{ data_fim }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                                <i class="material-icons">chevron_left</i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#!">
+                                <i class="material-icons">chevron_left</i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="active">
+                                <a href="#!">{{ num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="waves-effect">
+                                <a href="?{% if data_inicio %}data_inicio={{ data_inicio }}&{% endif %}{% if data_fim %}data_fim={{ data_fim }}&{% endif %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="waves-effect">
+                            <a href="?{% if data_inicio %}data_inicio={{ data_inicio }}&{% endif %}{% if data_fim %}data_fim={{ data_fim }}&{% endif %}page={{ page_obj.next_page_number }}">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#!">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
 </section>
@@ -690,11 +653,11 @@ def doacoes_doador(request, doador_id):
                 <div class="row">
                     <div class="input-field col s12 m6">
                         <label for="nome">NOME:</label>
-                        <input type="text" name="nome" id="nome" class="validate" value=”{{ nome|default:’’ }}”>
+                        <input type="text" name="nome" id="nome" class="validate" value="{{ nome|default:'' }}">
                     </div>
                     <div class="input-field col s12 m6">
                         <label for="cpf">CPF:</label>
-                        <input type="text" name="cpf" id="cpf" class="validate" maxlength="11" value=”{{ cpf|default:’’ }}”>
+                        <input type="text" name="cpf" id="cpf" class="validate" maxlength="11" value="{{ cpf|default:'' }}">
                     </div>
                 </div>
                 <div class="input-field">
@@ -730,7 +693,7 @@ def doacoes_doador(request, doador_id):
 </div>
 {% endif %}
 
-{% if doadores %}
+{% if page_obj %}
 <section id="search-results" class="container py-4">
     <div class="card border">
         <div class="card-content">
@@ -753,7 +716,7 @@ def doacoes_doador(request, doador_id):
                     </tr>
                 </thead>
                 <tbody>
-                    {% for doador in doadores %}
+                    {% for doador in page_obj %}
                     <tr>
                         <td>{{ doador.codigo }}</td>
                         <td>{{ doador.nome }}</td>
@@ -775,11 +738,51 @@ def doacoes_doador(request, doador_id):
                     {% endfor %}
                 </tbody>
             </table>
+            <div class="center-align">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="waves-effect">
+                            <a href="?{% if nome %}nome={{ nome }}&{% endif %}{% if cpf %}cpf={{ cpf }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                                <i class="material-icons">chevron_left</i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#!">
+                                <i class="material-icons">chevron_left</i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="active">
+                                <a href="#!">{{ num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="waves-effect">
+                                <a href="?{% if nome %}nome={{ nome }}&{% endif %}{% if cpf %}cpf={{ cpf }}&{% endif %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="waves-effect">
+                            <a href="?{% if nome %}nome={{ nome }}&{% endif %}{% if cpf %}cpf={{ cpf }}&{% endif %}page={{ page_obj.next_page_number }}">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#!">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
 </section>
 {% endif %}
-
 {% endblock content %}
 ```
 
