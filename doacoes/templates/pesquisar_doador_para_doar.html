@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}PESQUISAR DOADOR{% endblock title %}
+
+{% block content %}
+<section id="search-form" class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">PESQUISAR DOADOR PARA DOAR SANGUE</span>
+            </blockquote>
+            
+            <div class="divider red darken-2"></div>
+            <form action="{% url 'pesquisar_doador_para_doar' %}" method="GET" novalidate>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <label for="nome">NOME:</label>
+                        <input type="text" name="nome" id="nome" class="validate" value="{{ nome|default:'' }}">
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <label for="cpf">CPF:</label>
+                        <input type="text" name="cpf" id="cpf" class="validate" maxlength="11" value="{{ cpf|default:'' }}">
+                    </div>
+                </div>
+                <div class="input-field">
+                    <button type="submit" class="waves-effect waves-light btn">
+                        PESQUISAR
+                        <i class="material-icons left">search</i>
+                    </button>
+                    <a href="{% url 'main_page' %}" class="btn red">
+                        VOLTAR À TELA PRINCIPAL
+                        <i class="material-icons left">arrow_back</i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% if messages %}
+<div class="container py-4">
+    <div class="card-content">
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="card-panel red lighten-2">
+                    <span class="white-text">{{ message }}</span>
+                </div>
+            {% elif message.tags == 'success' %}
+                <div class="card-panel teal lighten-2">
+                    <span class="white-text">{{ message }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if doadores %}
+<section id="search-results" class="container py-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">RESULTADO DA PESQUISA</span>
+            </blockquote>
+            
+            <div class="divider red darken-2"></div>
+            <table class="striped centered responsive-table">
+                <thead>
+                    <tr>
+                        <th>CÓDIGO</th>
+                        <th>NOME</th>
+                        <th>CPF</th>
+                        <th>CONTATO</th>
+                        <th>TIPO SANGUÍNEO</th>
+                        <th>RH</th>
+                        <th>DOAR</th>
+                        <th>VER DOAÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doador in doadores %}
+                    <tr>
+                        <td>{{ doador.codigo }}</td>
+                        <td>{{ doador.nome }}</td>
+                        <td>{{ doador.cpf }}</td>
+                        <td>{{ doador.contato }}</td>
+                        <td>{{ doador.get_tipo_sanguineo_display }}</td>
+                        <td>{{ doador.get_rh_display }}</td>
+                        <td>
+                            <a href="{% url 'cadastrar_doacao' doador.codigo %}" class="waves-effect waves-light btn">DOAR
+                                <i class="material-icons left">opacity</i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'doacoes_doador' doador.codigo %}" class="btn white red-text">VER DOAÇÕES
+                                <i class="material-icons left">assignment</i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock content %}

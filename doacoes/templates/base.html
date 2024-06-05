@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Doações{% endblock title %}</title>
+    {% load static %}
+    <link href="{% static 'css/materialize.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <main>
+        {% block content %}
+
+        {% endblock content %}
+    </main>
+    <script src="{% static 'js/materialize.min.js' %}"></script>
+
+</body>
+
+</html>

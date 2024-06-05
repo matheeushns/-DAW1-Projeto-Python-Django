@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}EDITAR DOADOR{% endblock title %}
+
+{% block content %}
+
+<!-- Bloco de Dados Atuais do Doador -->
+<section class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">DADOS ATUAIS DO DOADOR</span>
+            </blockquote>
+            <div class="divider red darken-2"></div>
+            <div class="py-3 mt-3 mb-3"><br></div>    
+            <div class="row">
+                <div class="col s12 m6">                   
+                    <p><strong>NOME:</strong> {{ doador.nome }}</p>
+                    <p><strong>CPF:</strong> {{ doador.cpf }}</p>
+                    <p><strong>CONTATO:</strong> {{ doador.contato }}</p>
+                </div>
+                <div class="col s12 m6">
+                    <p><strong>TIPO SANGUÍNEO:</strong> {{ doador.get_tipo_sanguineo_display }}</p>
+                    <p><strong>RH:</strong> {{ doador.get_rh_display }}</p>
+                </div>
+            </div>
+            {% if doador.situacao == 'INATIVO' %}
+            <a href="{% url 'reativar_doador' doador.codigo %}" class="btn waves-effect waves-light">Reativar Doador</a>
+
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if doador.situacao == 'ATIVO' %}
+<!-- Formulário de Edição do Doador -->
+
+<section class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">EDITAR DOADOR</span>
+            </blockquote>
+            <div class="divider red darken-2"></div>
+            <div class="py-3 mt-3 mb-3"><br></div>          
+            <form method="POST" class="row" novalidate>
+                {% csrf_token %}
+                <div class="input-field col s12 m6">
+                    {{ form.nome.label_tag }}
+                    {{ form.nome }}
+                    {% if form.nome.errors %}
+                    {% for error in form.nome.errors %}
+                    <span class="helper-text red-text">{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="input-field col s12 m6">
+                    {{ form.cpf.label_tag }}
+                    {{ form.cpf }}
+                    {% if form.cpf.errors %}
+                    {% for error in form.cpf.errors %}
+                    <span class="helper-text red-text">{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="input-field col s12 m6">
+                    {{ form.contato.label_tag }}
+                    {{ form.contato }}
+                    {% if form.contato.errors %}
+                    {% for error in form.contato.errors %}
+                    <span class="helper-text red-text">{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="input-field col s12 m6">
+                    <div class="col s12 m6">
+                        <label>TIPO SANGUÍNEO:</label>
+                        <div class="input-field">
+                            {% for tipo_sangue in form.tipo_sanguineo %}
+                            <p>
+                                <label>
+                                    {{ tipo_sangue.tag }}
+                                    <span>{{ tipo_sangue.choice_label }}</span>
+                                </label>
+                            </p>
+                            {% endfor %}
+                            {% if form.tipo_sanguineo.errors %}
+                            <span class="helper-text red-text">{{ form.tipo_sanguineo.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col s12 m6">
+                        <label>RH:</label>
+                        <div class="input-field">
+                            {% for rh in form.rh %}
+                            <p>
+                                <label>
+                                    {{ rh.tag }}
+                                    <span>{{ rh.choice_label }}</span>
+                                </label>
+                            </p>
+                            {% endfor %}
+                            {% if form.rh.errors %}
+                            <span class="helper-text red-text">{{ form.rh.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <button type="submit" class="waves-effect waves-light btn">SALVAR EDIÇÃO
+                            <i class="material-icons left">save</i>
+                        </button>
+                        <a href="{% url 'pesquisar_doador' %}" class="btn red">CANCELAR E VOLTAR
+                            <i class="material-icons left">arrow_back</i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</section>
+{% endif %}
+{% endblock content %}

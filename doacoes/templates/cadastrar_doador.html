@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}CADASTRO DE DOADORES{% endblock title %}
+
+{% block content %}
+<section id="cadastro" class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote><span class="card-title">CADASTRAR NOVO DOADOR</span></blockquote>
+            <div class="divider red darken-2"></div>
+            <form action="{% url 'cadastrar_doador' %}" method="POST" class="row" novalidate>
+                {% csrf_token %}
+                <div class="input-field col s12 m6">
+                    {{ form.nome.label_tag }}
+                    {{ form.nome }}
+                    {% if form.nome.errors %}
+                    {% for error in form.nome.errors %}
+                    <span class="helper-text red-text">{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="input-field col s12 m6">
+                    {{ form.cpf.label_tag }}
+                    {{ form.cpf }}
+                    {% if form.cpf.errors %}
+                    {% for error in form.cpf.errors %}
+                    <span class="helper-text red-text">{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="input-field col s12 m6">                    
+                    {{ form.contato.label_tag }}
+                    {{ form.contato }}
+                    {% if form.contato.errors %}
+                    {% for error in form.contato.errors %}
+                    <span class="helper-text red-text">{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="input-field col s12 m6">
+                    <div class="col s12 m6">
+                        <label>TIPO SANGUÍNEO:</label>
+                        <div class="input-field">
+                            {% for tipo_sangue in form.tipo_sanguineo %}
+                            <p>
+                                <label>
+                                    {{ tipo_sangue.tag }}
+                                    <span>{{ tipo_sangue.choice_label }}</span>
+                                </label>
+                            </p>
+                            {% endfor %}
+                            {% if form.tipo_sanguineo.errors %}
+                            <span class="helper-text red-text">{{ form.tipo_sanguineo.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col s12 m6">
+                        <label>RH:</label>
+                        <div class="input-field">
+                            {% for rh in form.rh %}
+                            <p>
+                                <label>
+                                    {{ rh.tag }}
+                                    <span>{{ rh.choice_label }}</span>
+                                </label>
+                            </p>
+                            {% endfor %}
+                            {% if form.rh.errors %}
+                            <span class="helper-text red-text">{{ form.rh.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="input-field col s12">
+                    <button type="submit" class="waves-effect waves-light btn">
+                        CADASTRAR
+                        <i class="material-icons left">person_add</i>
+                    </button>
+                    <a href="{% url 'main_page' %}" class="btn red">
+                        VOLTAR À TELA PRINCIPAL
+                        <i class="material-icons left">arrow_back</i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+{% if messages %}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            {% for message in messages %}
+            <div
+                class="card-panel {% if message.tags == 'error' %}red lighten-2{% elif message.tags == 'success' %}teal lighten-2{% endif %}">
+                <span class="white-text">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
+<section id="doadores" class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote><span class="card-title">DOADORES CADASTRADOS</span></blockquote>
+            <div class="divider red darken-2"></div>
+            {% if doadores %}
+            <table class="striped centered responsive-table">
+                <thead>
+                    <tr>
+                        <th>CÓDIGO</th>
+                        <th>NOME</th>
+                        <th>CPF</th>
+                        <th>CONTATO</th>
+                        <th>TIPO SANGUÍNEO</th>
+                        <th>RH</th>
+                        <th>SITUAÇÃO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doador in doadores %}
+                    <tr>
+                        <td>{{ doador.codigo }}</td>
+                        <td>{{ doador.nome }}</td>
+                        <td>{{ doador.cpf }}</td>
+                        <td>{{ doador.contato }}</td>
+                        <td>{{ doador.get_tipo_sanguineo_display }}</td>
+                        <td>{{ doador.get_rh_display }}</td>
+                        <td>{{ doador.situacao }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="card-panel">
+                <p>Nenhum doador cadastrado ainda.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}PESQUISAR DOADOR{% endblock title %}
+
+{% block content %}
+<section id="search-form" class="container py-4 mb-4">
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">PESQUISAR DOADOR(ES)</span>
+            </blockquote>
+            
+            <div class="divider red darken-2"></div>
+            <form action="{% url 'pesquisar_doador' %}" method="GET" novalidate>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <label for="nome">NOME:</label>
+                        <input type="text" name="nome" id="nome" class="validate" value="{{ nome|default:'' }}">
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <label for="cpf">CPF:</label>
+                        <input type="text" name="cpf" id="cpf" class="validate" maxlength="11" value="{{ cpf|default:'' }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m6">
+                        <label>TIPO SANGUÍNEO:</label>
+                        <div class="input-field">
+                            <p>
+                                <label>
+                                    <input name="tipo_sanguineo" type="radio" value="A" class="with-gap" {% if tipo_sanguineo == 'A' %}checked{% endif %}/>
+                                    <span>A</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="tipo_sanguineo" type="radio" value="B" class="with-gap" {% if tipo_sanguineo == 'B' %}checked{% endif %}/>
+                                    <span>B</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="tipo_sanguineo" type="radio" value="AB" class="with-gap" {% if tipo_sanguineo == 'AB' %}checked{% endif %}/>
+                                    <span>AB</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="tipo_sanguineo" type="radio" value="O" class="with-gap" {% if tipo_sanguineo == 'O' %}checked{% endif %}/>
+                                    <span>O</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="tipo_sanguineo" type="radio" value="Todos" class="with-gap" {% if tipo_sanguineo == 'Todos' %}checked{% endif %}/>
+                                    <span>Todos</span>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col s12 m6">
+                        <label>RH:</label>
+                        <div class="input-field">
+                            <p>
+                                <label>
+                                    <input name="rh" type="radio" value="POSITIVO" class="with-gap" {% if rh == 'POSITIVO' %}checked{% endif %}/>
+                                    <span>POSITIVO</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="rh" type="radio" value="NEGATIVO" class="with-gap" {% if rh == 'NEGATIVO' %}checked{% endif %}/>
+                                    <span>NEGATIVO</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="rh" type="radio" value="Todos" class="with-gap" {% if rh == 'Todos' %}checked{% endif %}/>
+                                    <span>Todos</span>
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                </div>                                
+                <div class="input-field">
+                    <button type="submit" class="waves-effect waves-light btn">
+                        PESQUISAR
+                        <i class="material-icons left">search</i>
+                    </button>
+                    <a href="{% url 'main_page' %}" class="btn red">
+                        VOLTAR À TELA PRINCIPAL
+                        <i class="material-icons left">arrow_back</i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% if messages %}
+{% if messages %}
+<div class="container py-4">
+    <div class="card-content">
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="card-panel red lighten-2">
+                    <span class="white-text">{{ message }}</span>
+                </div>
+            {% elif message.tags == 'success' %}
+                <div class="card-panel teal lighten-2">
+                    <span class="white-text">{{ message }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% else %}
+{% if doadores %}
+<section id="search-results" class="container py-4">
+
+    <div class="card border">
+        <div class="card-content">
+            <blockquote>
+                <span class="card-title">RESULTADO(S) DA PESQUISA</span>
+            </blockquote>
+            
+            <div class="divider red darken-2"></div>
+            <table class="striped centered responsive-table">
+                <thead>
+                    <tr>
+                        <th>CÓDIGO</th>
+                        <th>NOME</th>
+                        <th>CPF</th>
+                        <th>CONTATO</th>
+                        <th>TIPO SANGUÍNEO</th>
+                        <th>RH</th>
+                        <th>ALTERAR</th>
+                        <th>REMOVER</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doador in doadores %}
+                    <tr>
+                        <td>{{ doador.codigo }}</td>
+                        <td>{{ doador.nome }}</td>
+                        <td>{{ doador.cpf }}</td>
+                        <td>{{ doador.contato }}</td>
+                        <td>{{ doador.get_tipo_sanguineo_display }}</td>
+                        <td>{{ doador.get_rh_display }}</td>
+                        <td><a href="{% url 'editar_doador' doador.codigo %}" class="btn blue">ALTERAR
+                                <i class="material-icons left">edit</i>
+                            </a></td>
+                        <td><a href="{% url 'excluir_doador' doador.codigo %}" class="btn red">REMOVER
+                                <i class="material-icons left">remove_circle_outline</i>
+                            </a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+{% endif %}
+{% endif %}
+{% endblock content %}
